@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://bsn8o457q00p0"]
+
+[ext_resource type="Script" uid="uid://d11pb1unqosaq" path="res://scripts/main_menu.gd" id="1_l6cm7"]
+
+[node name="main_menu" type="Control" unique_id=1561999052]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_l6cm7")
+
+[node name="multiplayer" type="VBoxContainer" parent="." unique_id=1412124526]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="host" type="Button" parent="multiplayer" unique_id=1720664039]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Server"
+
+[node name="join" type="Button" parent="multiplayer" unique_id=1781757890]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Client"
+
+[node name="send_test_msg" type="Button" parent="multiplayer" unique_id=662708078]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Send Test Message"
+
+[connection signal="pressed" from="multiplayer/host" to="." method="_on_host_pressed"]
+[connection signal="pressed" from="multiplayer/join" to="." method="_on_join_pressed"]
+[connection signal="pressed" from="multiplayer/send_test_msg" to="." method="_on_send_test_msg_pressed"]
