@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://cur86c7yuhj8h"]
+
+[ext_resource type="PackedScene" uid="uid://ejev0rs5tkxl" path="res://models/mapobjects/torch.gltf" id="2_0rna8"]
+[ext_resource type="PackedScene" uid="uid://bcpbmbfi0n3og" path="res://entities/light_flame_small_yellow.tscn" id="3_eppjr"]
+
+[node name="LightTorchSmallWallTorch" type="OmniLight3D" unique_id=1371238074]
+omni_range = 10.0
+omni_attenuation = 1.5
+
+[node name="torch2" parent="." unique_id=465228128 instance=ExtResource("2_0rna8")]
+transform = Transform3D(0.031, 0, 0, 0, 0.031, 0, 0, 0, 0.031, 0, 0, 0)
+
+[node name="Light" parent="." unique_id=909842574 instance=ExtResource("3_eppjr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.32830486, 0)
+light_energy = 7.618346

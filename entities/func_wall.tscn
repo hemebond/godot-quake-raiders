@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://llk16qq5qbpw"]
+
+[node name="FuncWall" type="StaticBody3D"]

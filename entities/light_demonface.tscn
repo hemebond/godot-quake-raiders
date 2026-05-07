@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://cqe7xgefxat85"]
+
+[ext_resource type="Script" uid="uid://gxo3vckhpdid" path="res://entities/light.gd" id="1_rujvj"]
+[ext_resource type="Texture2D" uid="uid://31sebpknwxya" path="res://particles/flame1.png" id="2_wc4hk"]
+
+[sub_resource type="Curve" id="Curve_wc4hk"]
+_data = [Vector2(0, 1), 0.0, -2.113264, 0, 0, Vector2(0.9878048, 0.008474708), -0.20976561, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_blqdl"]
+curve = SubResource("Curve_wc4hk")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_blqdl"]
+emission_shape_offset = Vector3(-0.185, 0, 0)
+emission_shape_scale = Vector3(0.1, 1, 1)
+emission_shape = 3
+emission_box_extents = Vector3(0.1, 0.1, 0.1)
+initial_velocity_min = 0.29999998
+initial_velocity_max = 0.29999998
+gravity = Vector3(0, 0, 0)
+attractor_interaction_enabled = false
+scale_min = 0.03
+scale_max = 0.07
+alpha_curve = SubResource("CurveTexture_blqdl")
+hue_variation_min = -0.06000002
+hue_variation_max = 0.059999976
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_76slh"]
+transparency = 1
+blend_mode = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 0.74363387, 0, 1)
+albedo_texture = ExtResource("2_wc4hk")
+texture_filter = 0
+billboard_mode = 1
+billboard_keep_scale = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_b2g2b"]
+material = SubResource("StandardMaterial3D_76slh")
+
+[node name="Light" type="OmniLight3D" unique_id=1371238074]
+omni_range = 10.0
+omni_attenuation = 1.5
+script = ExtResource("1_rujvj")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=1612683983]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 0.05)
+cast_shadow = 0
+gi_mode = 0
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_blqdl")
+draw_pass_1 = SubResource("QuadMesh_b2g2b")

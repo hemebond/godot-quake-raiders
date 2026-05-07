@@ -1,0 +1,36 @@
+[gd_scene format=4 uid="uid://doux2ddq3qlro"]
+
+[ext_resource type="Script" uid="uid://csp5ds14hovos" path="res://entities/func_door.gd" id="1_0do8k"]
+[ext_resource type="Material" uid="uid://chab14wp1tabu" path="res://materials/wmet2_1_material.tres" id="2_tc5bk"]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_24tt3"]
+lightmap_size_hint = Vector2i(34, 30)
+_surfaces = [{
+"aabb": AABB(0.5, 12, 1.5, 0.5, 0.5, 3),
+"attribute_data": PackedByteArray("AAAAvwAAwMCXllY/ERGRPgAAgL4AAMDAPDx8PxERkT4AAIC+AADIwDw8fD9mZuY+AAAAvwAAyMCXllY/ZmbmPgAAgL4AAMDAl5ZWP4mIiDwAAAC/AADAwDw8fD+JiIg8AAAAvwAAyMA8PHw/vLs7PgAAgL4AAMjAl5ZWP7y7Oz4AABDAAADIwAAAQD+8uzs+AABAvwAAyMDx8HA8vLs7PgAAQL8AAMDA8fBwPImIiDwAABDAAADAwAAAQD+JiIg8AABAvwAAyMDx8HA8d3c3PwAAEMAAAMjAAABAP3d3Nz8AABDAAADAwAAAQD/NzAw/AABAvwAAwMDx8HA8zcwMPwAAQL8AAAA/8fBwPBERUT8AAEC/AACAPvHwcDy8u3s/AAAQwAAAgD4AAEA/vLt7PwAAEMAAAAA/AABAPxERUT8AAEC/AACAPvHwcDwREZE+AABAvwAAAD/x8HA8ZmbmPgAAEMAAAAA/AABAP2Zm5j4AABDAAACAPgAAQD8REZE+"),
+"format": 34359742519,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"material": ExtResource("2_tc5bk"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("AACAPwAAQEEAAJBAAAAAPwAAQEEAAJBAAAAAPwAASEEAAJBAAACAPwAASEEAAJBAAAAAPwAAQEEAAMA/AACAPwAAQEEAAMA/AACAPwAASEEAAMA/AAAAPwAASEEAAMA/AACAPwAASEEAAJBAAACAPwAASEEAAMA/AACAPwAAQEEAAMA/AACAPwAAQEEAAJBAAAAAPwAASEEAAMA/AAAAPwAASEEAAJBAAAAAPwAAQEEAAJBAAAAAPwAAQEEAAMA/AACAPwAAQEEAAMA/AAAAPwAAQEEAAMA/AAAAPwAAQEEAAJBAAACAPwAAQEEAAJBAAAAAPwAASEEAAMA/AACAPwAASEEAAMA/AACAPwAASEEAAJBAAAAAPwAASEEAAJBA/3//fwAA/z//f/9/AAD/P/9//38AAP8//3//fwAA/z//////AAD/v/////8AAP+//////wAA/7//////AAD/v///AID///////8AgP///////wCA////////AID/////AAAAgP//AAAAAACA//8AAAAAAID//wAAAAAAgP//AAAAgAAA//8AAACAAAD//wAAAIAAAP//AAAAgAAA//8AAACA////////AID///////8AgP///////wCA////////")
+}]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_d241p"]
+size = Vector3(0.5, 0.5, 3)
+
+[node name="FuncDoor" type="StaticBody3D" unique_id=1759906293]
+script = ExtResource("1_0do8k")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=52375399]
+
+[node name="Mesh" type="MeshInstance3D" parent="." unique_id=2071086723]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
+mesh = SubResource("ArrayMesh_24tt3")
+skeleton = NodePath("../Area3D")
+
+[node name="CollisionBox1" type="CollisionShape3D" parent="." unique_id=1381918733]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, -0.74999976, 12.25, -3)
+shape = SubResource("BoxShape3D_d241p")

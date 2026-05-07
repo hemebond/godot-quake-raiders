@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://4vmm6q4npodh"]
+
+[ext_resource type="Script" uid="uid://hvs055dkelbx" path="res://entities/liquid_water.gd" id="1_wre48"]
+
+[sub_resource type="FogMaterial" id="FogMaterial_wre48"]
+density = 5.0
+edge_fade = 0.00018502428
+
+[node name="Water" type="Area3D" unique_id=1542365142]
+gravity_space_override = 3
+gravity = 0.0
+linear_damp_space_override = 3
+linear_damp = 11.464
+angular_damp_space_override = 3
+angular_damp = 7.676
+script = ExtResource("1_wre48")
+
+[node name="make your own water template with a script" type="Node3D" parent="." unique_id=2117717096]
+
+[node name="for entering the area or whatever you need" type="Node3D" parent="." unique_id=247927542]
+
+[node name="for your game, specifically and set it in the" type="Node3D" parent="." unique_id=1485880492]
+
+[node name="bsp import options" type="Node3D" parent="." unique_id=570984916]
+
+[node name="Water collision shapes will be added as children" type="Node3D" parent="." unique_id=422997161]
+
+[node name="FogVolume" type="FogVolume" parent="." unique_id=745231888]
+material = SubResource("FogMaterial_wre48")

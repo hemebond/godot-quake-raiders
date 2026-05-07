@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://7nbpklvl7cd4"]
+
+[ext_resource type="Script" uid="uid://c5kd18i1jc5pr" path="res://entities/player2/character_controller_3d.gd" id="1_4wurg"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_merdl"]
+size = Vector3(0.625, 1.75, 0.625)
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_4wurg")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+shape = SubResource("BoxShape3D_merdl")
+
+[node name="CameraHolder" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="Camera3D" type="Camera3D" parent="CameraHolder"]
+fov = 90.0

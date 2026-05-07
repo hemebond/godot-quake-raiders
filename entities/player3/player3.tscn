@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://oaob7kvqfw7e"]
+
+[ext_resource type="Script" uid="uid://dx4k4ixtlldat" path="res://entities/player3/player3.gd" id="1_84ah7"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_84ah7"]
+size = Vector3(0.625, 1.75, 0.625)
+
+[sub_resource type="BoxMesh" id="BoxMesh_84ah7"]
+size = Vector3(0.625, 1.75, 0.625)
+
+[node name="Player3" type="CharacterBody3D"]
+script = ExtResource("1_84ah7")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+shape = SubResource("BoxShape3D_84ah7")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CollisionShape3D"]
+mesh = SubResource("BoxMesh_84ah7")
+skeleton = NodePath("../..")
+
+[node name="CameraHolder" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2529235, 0)
+
+[node name="Camera3D" type="Camera3D" parent="CameraHolder"]
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+omni_range = 24.921
+omni_attenuation = 2.514

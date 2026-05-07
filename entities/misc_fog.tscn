@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://fy1tdr03l3d8"]
+
+[sub_resource type="FogMaterial" id="FogMaterial_qb2qu"]
+
+[node name="MiscFog" type="FogVolume"]
+material = SubResource("FogMaterial_qb2qu")

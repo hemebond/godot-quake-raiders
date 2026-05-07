@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://c2le26urygxnt"]
+
+[ext_resource type="Script" uid="uid://betdd0yc4kqo0" path="res://entities/q3player/q3player.gd" id="1_f2v1j"]
+
+[node name="Q3Player" type="Node3D"]
+script = ExtResource("1_f2v1j")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]

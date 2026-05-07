@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://cilgo4apahqn6"]
+
+[ext_resource type="Script" uid="uid://cal6ysxkju4u7" path="res://entities/player4/player4.gd" id="1_ea3jo"]
+[ext_resource type="Script" uid="uid://bk7ee27eshld7" path="res://entities/player4/camera_smooth.gd" id="2_3kkha"]
+[ext_resource type="Script" uid="uid://6hjtwat0iwuh" path="res://entities/player4/player_input.gd" id="7_3kkha"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_y1cq6"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:player")
+properties/1/spawn = true
+properties/1/replication_mode = 0
+properties/2/path = NodePath(".:rotation")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_uk87k"]
+height = 1.75
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y1cq6"]
+albedo_color = Color(1, 0, 0.17534637, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_uk87k"]
+material = SubResource("StandardMaterial3D_y1cq6")
+top_radius = 0.4
+bottom_radius = 0.4
+height = 1.75
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_3kkha"]
+properties/0/path = NodePath("player_input:input_dir")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
+[node name="Player4" type="CharacterBody3D" unique_id=700726023 node_paths=PackedStringArray("PLAYER_COLLIDER")]
+script = ExtResource("1_ea3jo")
+PLAYER_COLLIDER = NodePath("CollisionShape3D")
+metadata/_custom_type_script = "uid://cal6ysxkju4u7"
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1493666502]
+replication_config = SubResource("SceneReplicationConfig_y1cq6")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1958873822]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+shape = SubResource("CylinderShape3D_uk87k")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CollisionShape3D" unique_id=1380838959]
+layers = 2
+mesh = SubResource("CylinderMesh_uk87k")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=2121479126]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.93841624, 0)
+light_color = Color(0, 0.28298175, 0.4895833, 1)
+light_energy = 0.5
+
+[node name="camera_holder" type="Node3D" parent="." unique_id=1663398731]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="camera" type="Camera3D" parent="camera_holder" unique_id=292623396]
+top_level = true
+
+[node name="camera_smooth" type="Node" parent="." unique_id=545439459 node_paths=PackedStringArray("character", "camera_holder", "camera")]
+script = ExtResource("2_3kkha")
+character = NodePath("..")
+camera_holder = NodePath("../camera_holder")
+camera = NodePath("../camera_holder/camera")
+
+[node name="player_input" type="MultiplayerSynchronizer" parent="." unique_id=1852614260]
+replication_config = SubResource("SceneReplicationConfig_3kkha")
+script = ExtResource("7_3kkha")
