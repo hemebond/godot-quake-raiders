@@ -1,5 +1,9 @@
 extends MultiplayerSynchronizer
 
+#
+# Sends properties from client to server
+#
+
 
 @export var character: CharacterBody3D
 @export var around: Node3D
@@ -7,7 +11,7 @@ extends MultiplayerSynchronizer
 @export var camera: Camera3D
 
 
-var wish_dir : Vector3 = Vector3()
+var wishdir : Vector3 = Vector3()
 var wish_jump : bool = false
 
 
@@ -30,7 +34,7 @@ func _process(_delta: float) -> void:
 	if Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED :
 		return
 
-	wish_dir = (head if character.noclip else around).global_transform.basis * Vector3((
+	wishdir = (head if character.noclip else around).global_transform.basis * Vector3((
 		Input.get_axis(&"q1_move_left", &"q1_move_right")
 	), 0, (
 		Input.get_axis(&"q1_move_forward", &"q1_move_back")
@@ -47,6 +51,8 @@ func _process(_delta: float) -> void:
 		if Input.is_action_just_released(&"q1_jump") :
 			wish_jump = false
 
+
+
 func _input(event : InputEvent) -> void :
 	if Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED :
 		return
@@ -56,13 +62,15 @@ func _input(event : InputEvent) -> void :
 
 	if event is InputEventMouseMotion :
 		var r : Vector2 = event.relative * -1
-		head.rotate_x(r.y * character.sensitivity)
-		around.rotate_y(r.x * character.sensitivity)
+		#head.rotate_x(r.y * character.sensitivity)
+		#around.rotate_y(r.x * character.sensitivity)
+		#head.rotation.x = clampf(head.rotation.x, -PI/2, PI/2)
+		
+		head.rotate_y(r.x * character.sensitivity)
+		camera.rotate_x(r.y * character.sensitivity)
+		camera.rotation.x = clampf(camera.rotation.x, -PI/2, PI/2)
 
-		# var hrot = character.head.rotation
-		# hrot.x = clampf(hrot.x, -PI/2, PI/2)
-		# character.head.rotation = hrot
-		head.rotation.x = clampf(head.rotation.x, -PI/2, PI/2)
+
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("m1"):
@@ -70,6 +78,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	if event.is_action_pressed("m2"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+
+
 
 func toggle_noclip() -> void:
 	character.noclip = !character.noclip

@@ -30,6 +30,7 @@ var noclip : bool = false
 #@onready var jump : AudioStreamPlayer3D = $jump
 @onready var origin : Node3D = $origin
 
+var wishdir : Vector3
 var wish_jump : bool = false
 var auto_jump : bool = false
 var smooth_y : float
@@ -39,31 +40,19 @@ var fluid : QmapbspQuakeFluidVolume
 var tbodyq : PhysicsTestMotionParameters3D
 var tbodyr : PhysicsTestMotionResult3D
 
-@export var player := 1:
-	set(id):
-		player = id
-		
-@export var player_id := 1:
-	set(id):
-		player_id = id
-		$player_input.set_multiplayer_authority(id)
-		$around.set_multiplayer_authority(id)
 
+
+func _enter_tree() -> void:
+	print("Created new player with id ", name, " and multiplayer authority ", get_multiplayer_authority())
+	set_multiplayer_authority(name.to_int(), true)
 
 func _ready() -> void:
-	#jump.stream = viewer.hub.load_audio("player/plyrjmp8.wav")
 	tbodyq = PhysicsTestMotionParameters3D.new()
 	tbodyr = PhysicsTestMotionResult3D.new()
+	
+	camera.current = is_multiplayer_authority()
 
-	if multiplayer.get_unique_id() == player_id:
-		camera.make_current()
-	else:
-		camera.current = false
-
-	# Disable processing, etc, for everyone except the authority
-	if not multiplayer.is_server():
-		set_process(false)
-		set_physics_process(false)
+	set_physics_process(is_multiplayer_authority())
 
 	print("Player %s is ready (authority %s)" % [multiplayer.get_unique_id(), get_multiplayer_authority()])
 
@@ -85,11 +74,10 @@ func teleport_to(dest : Node3D, _play_sound : bool = false) -> void:
 		#viewer.add_child(p)
 		#p.global_position = global_position
 		#p.play()
-		
 
 func accelerate(in_speed : float, delta : float) -> void:
-	velocity += $player_input.wish_dir * (
-		clampf(in_speed - velocity.dot($player_input.wish_dir), 0, accel * delta)
+	velocity += wishdir * (
+		clampf(in_speed - velocity.dot(wishdir), 0, accel * delta)
 	)
 
 func friction(delta : float) -> void :
@@ -145,10 +133,10 @@ func _process_stair(delta : float) -> void:
 	var delta_motion := velocity * delta
 	delta_motion.y = 0.0
 	
-	if (delta_motion + $player_input.wish_dir).is_zero_approx() :
+	if (delta_motion + wishdir).is_zero_approx() :
 		return
 	
-	var delta_motion_up : Vector3 = delta_motion + $player_input.wish_dir * 0.1
+	var delta_motion_up : Vector3 = delta_motion + wishdir * 0.1
 	
 	# check objects above the character
 	tbodyq.from = global_transform
@@ -207,30 +195,27 @@ func _process_stair(delta : float) -> void:
 			smooth_y = -height
 			around.position.y += smooth_y
 
-func _physics_process(delta : float) -> void:
-	if not multiplayer.is_server():
-		return
-
-	# if Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED :
-	# 	return
-		
-	# $player_input.wish_dir = (head if noclip else around).global_transform.basis * Vector3((
-	# 	Input.get_axis(&"q1_move_left", &"q1_move_right")
-	# ), 0, (
-	# 	Input.get_axis(&"q1_move_forward", &"q1_move_back")
-	# )).normalized()
+func _physics_process(delta : float) -> void:		
+	#wishdir = $InputSynchronizer.wishdir
+	#wish_jump = $InputSynchronizer.wish_jump
 	
-	if noclip :
+	wishdir = (head if noclip else around).global_transform.basis * Vector3((
+		Input.get_axis(&"q1_move_left", &"q1_move_right")
+	), 0, (
+		Input.get_axis(&"q1_move_forward", &"q1_move_back")
+	)).normalized()
+
+	if noclip:
 		move_noclip(delta)
 		return
 	
-	# if auto_jump :
-	# 	wish_jump = Input.is_action_pressed(&"q1_jump")
-	# else :
-	# 	if !wish_jump and Input.is_action_just_pressed(&"q1_jump") :
-	# 		wish_jump = true
-	# 	if Input.is_action_just_released(&"q1_jump") :
-	# 		wish_jump = false
+	if auto_jump :
+		wish_jump = Input.is_action_pressed(&"q1_jump")
+	else :
+		if !wish_jump and Input.is_action_just_pressed(&"q1_jump") :
+			wish_jump = true
+		if Input.is_action_just_released(&"q1_jump") :
+			wish_jump = false
 	
 	if fluid :
 		# trash movement ;)
@@ -248,7 +233,6 @@ func _physics_process(delta : float) -> void:
 	else :
 		if is_on_floor() :
 			if wish_jump :
-				#jump.play()
 				velocity.y = jump_up
 				move_air(delta)
 				wish_jump = false
@@ -262,11 +246,11 @@ func _physics_process(delta : float) -> void:
 	if is_zero_approx(smooth_y) :
 		smooth_y = 0.0
 	else :
-		#print(smooth_y)
 		smooth_y /= 1.125
-		around.position.y = smooth_y + 1.5  # the height of the around node
-	#Engine.time_scale = 0.2
-		
+		around.position.y = smooth_y
+
+
+
 var ppqp_water : PhysicsPointQueryParameters3D
 func _coltest() -> void :
 	for i in get_slide_collision_count() :
@@ -297,24 +281,36 @@ func _watercoltest() -> void:
 	if !arr.is_empty() :
 		fluid = arr[0]["collider"]
 		
-# func _input(event : InputEvent) -> void :
-# 	if Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED :
-# 		return
+func _input(event:InputEvent) -> void:
+	if Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED :
+		return
 		
-# 	if Input.is_action_just_pressed(&'q1_toggle_noclip') :
-# 		toggle_noclip()
+	if Input.is_action_just_pressed(&'q1_toggle_noclip') :
+		toggle_noclip()
 	
-# 	if event is InputEventMouseMotion :
-# 		var r : Vector2 = event.relative * -1
-# 		head.rotate_x(r.y * sensitivity)
-# 		around.rotate_y(r.x * sensitivity)
+	if event is InputEventMouseMotion :
+		var r : Vector2 = event.relative * -1
+		head.rotate_x(r.y * sensitivity)
+		around.rotate_y(r.x * sensitivity)
 		
-# 		var hrot = head.rotation
-# 		hrot.x = clampf(hrot.x, -PI/2, PI/2)
-# 		head.rotation = hrot
+		var hrot:Vector3 = head.rotation
+		hrot.x = clampf(hrot.x, -PI/2, PI/2)
+		head.rotation = hrot
 		
 #func _fluid_enter(f : QmapbspQuakeFluidVolume) :
 #	fluid = f
 #
 #func _fluid_exit(f : QmapbspQuakeFluidVolume) :
 #	if f == fluid : fluid = null
+
+func toggle_noclip() -> void:
+	noclip = !noclip
+
+
+
+func _unhandled_input(event: InputEvent) -> void:		
+	if event.is_action_pressed("m1"):
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+	if event.is_action_pressed("m2"):
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE

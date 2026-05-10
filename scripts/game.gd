@@ -2,17 +2,20 @@ extends Node3D
 
 
 
-@export var player_scene: PackedScene
-@export var player_container: Node
+@export var player_scene:PackedScene
+@export var player_container:Node3D
 
-const PORT: int = 42069
-
-var is_hosting_game : bool = false
+const DEFAULT_PORT:int = 7777
+const MAX_PLAYERS:int = 8
 
 @onready var main_menu: Control = $main_menu
 
 const GAME_SCENE = "uid://dgcbevg7wm4wv"  # game.tscn
 const MAIN_MENU_SCENE = "uid://bsn8o457q00p0"  # main_menu.tscn
+
+
+var peer:ENetMultiplayerPeer = ENetMultiplayerPeer.new()
+
 
 func _ready() -> void:
 	main_menu.send_test_msg.connect(_send_test_msg)
@@ -20,53 +23,61 @@ func _ready() -> void:
 	main_menu.join_game.connect(join_game)
 
 
-func _unhandled_input(_event: InputEvent) -> void:
-	if Input.is_action_just_pressed("quit"):
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("quit"):
 		get_tree().quit()
 
 
 
-
-
-
-
-func start_game() -> void:
+func start_game(port:int = DEFAULT_PORT) -> Error:
 	print("Starting host!")
 	
 	main_menu.hide()
 
-	is_hosting_game = true
-	var peer : ENetMultiplayerPeer = ENetMultiplayerPeer.new()
-	peer.create_server(PORT)  # MAX_CLIENTS defaults to 32
+	#var peer:ENetMultiplayerPeer = ENetMultiplayerPeer.new()
+	var error:Error = peer.create_server(port, MAX_PLAYERS)
+
+	if error != OK:
+		push_error("Failed to create server: %s" % error_string(error))
+		return error
+
 	multiplayer.multiplayer_peer = peer
 	
-	multiplayer.peer_connected.connect(_add_player_to_game)
-	multiplayer.peer_disconnected.connect(_remove_player_from_game)
-
-	print("server created")
+	# Only connect signals now that we have a server, otherwise will cause problems
+	multiplayer.peer_connected.connect(_on_peer_connected)
+	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+	#multiplayer.connected_to_server.connect(_on_connected_to_server)
+	#multiplayer.connection_failed.connect(_on_connection_failed)
+	#multiplayer.server_disconnected.connect(_on_server_disconnected)
 	
 	# Add the host to the game
-	_add_player_to_game(1)
+	_on_peer_connected(1)
 
-func _add_player_to_game(id: int) -> void:
+	return OK
+
+
+
+func _on_peer_connected(id:int) -> void:
 	print("Player %s joined the game" % id)
 	
 	# Setup player
-	var player_to_add : Node3D = player_scene.instantiate()
-	player_to_add.player_id = id
-	player_to_add.name = str(id)
+	var player:CharacterBody3D = player_scene.instantiate()
+	player.name = str(id)
 	
 	# Move the new player to the spawn point
 	# Assign the position to transform.origin because objects not yet in the tree have no global_position
-	var info_player_start : Node3D = get_tree().get_current_scene().get_node("world/test/info_player_start")
-	player_to_add.transform.origin = info_player_start.global_position
+	#var info_player_start : Node3D = get_tree().get_current_scene().get_node("world/test/info_player_start")
+	#player_to_add.transform.origin = info_player_start.global_position
 	
 	# Spawn player
-	player_container.add_child(player_to_add, true)
+	player_container.call_deferred("add_child", player)
 
-func _remove_player_from_game(id: int) -> void:
+
+
+func _on_peer_disconnected(id:int) -> void:
 	print("Player %s left the game" % id)
-	
+
 	if not player_container.has_node(str(id)):
 		return
 	
@@ -79,10 +90,9 @@ func join_game() -> void:
 	
 	main_menu.hide()
 	
-	var client_peer : ENetMultiplayerPeer = ENetMultiplayerPeer.new()
-	client_peer.create_client("localhost", PORT)
+	var _error:Error = peer.create_client("localhost", DEFAULT_PORT)
 	
-	multiplayer.multiplayer_peer = client_peer
+	multiplayer.multiplayer_peer = peer
 
 
 
