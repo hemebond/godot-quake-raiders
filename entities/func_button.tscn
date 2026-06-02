@@ -1,13 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://jvbqp4ea32y8"]
+[gd_scene format=3 uid="uid://jvbqp4ea32y8"]
 
 [ext_resource type="Script" uid="uid://c574crui2yr5i" path="res://entities/func_button.gd" id="1_ilt2y"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_ilt2y"]
-
-[node name="FuncButton" type="StaticBody3D"]
+[node name="func_button" type="StaticBody3D" unique_id=1575227356]
+collision_mask = 2
 script = ExtResource("1_ilt2y")
-
-[node name="trigger" type="Area3D" parent="."]
-
-[node name="shape" type="CollisionShape3D" parent="trigger"]
-shape = SubResource("BoxShape3D_ilt2y")

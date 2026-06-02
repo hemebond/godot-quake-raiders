@@ -17,7 +17,8 @@ class_name QmapbspQuakePlayer
 @export var sensitivity : float = 0.0025
 @export var stairstep := 0.6
 @export var stairstep_down := 0.6
-@export var stairstep_deg := deg_to_rad(20.0)
+#@export var stairstep_deg := deg_to_rad(20.0)
+@export var stairstep_deg := deg_to_rad(45.0)
 @export var gravity : float = 20
 @export var jump_up : float = 7.6
 
@@ -42,6 +43,10 @@ var tbodyr : PhysicsTestMotionResult3D
 
 
 
+signal toggle_ship_editor
+
+
+
 func _enter_tree() -> void:
 	print("Created new player with id ", name, " and multiplayer authority ", get_multiplayer_authority())
 	set_multiplayer_authority(name.to_int(), true)
@@ -52,7 +57,8 @@ func _ready() -> void:
 	
 	camera.current = is_multiplayer_authority()
 
-	set_physics_process(is_multiplayer_authority())
+	if get_multiplayer_authority() != 0:
+		set_physics_process(is_multiplayer_authority())
 
 	print("Player %s is ready (authority %s)" % [multiplayer.get_unique_id(), get_multiplayer_authority()])
 
@@ -159,7 +165,8 @@ func _process_stair(delta : float) -> void:
 	# check objects below
 	tbodyq.from.origin += delta_motion_up
 	# 0.001 is a bonus motion addition for godot physics.
-	tbodyq.motion = Vector3(0, -stairstep + 0.001, 0)
+	#tbodyq.motion = Vector3(0, -stairstep + 0.001, 0)
+	tbodyq.motion = Vector3(0, -stairstep, 0)
 	if PhysicsServer3D.body_test_motion(get_rid(), tbodyq, tbodyr) :
 		if (tbodyr.get_collision_normal().angle_to(Vector3.UP) <= stairstep_deg) :
 			var height := -tbodyr.get_remainder().y
@@ -199,22 +206,22 @@ func _physics_process(delta : float) -> void:
 	#wishdir = $InputSynchronizer.wishdir
 	#wish_jump = $InputSynchronizer.wish_jump
 	
-	wishdir = (head if noclip else around).global_transform.basis * Vector3((
-		Input.get_axis(&"q1_move_left", &"q1_move_right")
-	), 0, (
-		Input.get_axis(&"q1_move_forward", &"q1_move_back")
-	)).normalized()
+	#wishdir = (head if noclip else around).global_transform.basis * Vector3((
+		#Input.get_axis(&"move_left", &"move_right")
+	#), 0, (
+		#Input.get_axis(&"move_forward", &"move_backward")
+	#)).normalized()
 
 	if noclip:
 		move_noclip(delta)
 		return
 	
 	if auto_jump :
-		wish_jump = Input.is_action_pressed(&"q1_jump")
-	else :
-		if !wish_jump and Input.is_action_just_pressed(&"q1_jump") :
+		wish_jump = Input.is_action_pressed(&"jump")
+	else:
+		if !wish_jump and Input.is_action_just_pressed(&"jump"):
 			wish_jump = true
-		if Input.is_action_just_released(&"q1_jump") :
+		if Input.is_action_just_released(&"jump"):
 			wish_jump = false
 	
 	if fluid :
@@ -261,10 +268,7 @@ func _coltest() -> void :
 				obj = obj.get_parent()
 			if obj is QmapbspQuakeClipProxyAnimated :
 				obj = obj.get_parent()
-				
-			if obj.has_method(&'_player_touch') :
-				obj._player_touch(self, k.get_position(j), k.get_normal(j))
-				return
+
 	_watercoltest()
 		
 func _watercoltest() -> void:
@@ -278,14 +282,14 @@ func _watercoltest() -> void:
 	fluid = null
 	ppqp_water.position = origin.global_position
 	var arr := get_world_3d().direct_space_state.intersect_point(ppqp_water)
-	if !arr.is_empty() :
-		fluid = arr[0]["collider"]
+	#if !arr.is_empty() :
+		#fluid = arr[0]["collider"]
 		
 func _input(event:InputEvent) -> void:
 	if Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED :
 		return
 		
-	if Input.is_action_just_pressed(&'q1_toggle_noclip') :
+	if Input.is_action_just_pressed(&'toggle_noclip') :
 		toggle_noclip()
 	
 	if event is InputEventMouseMotion :
@@ -296,6 +300,12 @@ func _input(event:InputEvent) -> void:
 		var hrot:Vector3 = head.rotation
 		hrot.x = clampf(hrot.x, -PI/2, PI/2)
 		head.rotation = hrot
+
+	wishdir = (head if noclip else around).global_transform.basis * Vector3((
+		Input.get_axis(&"move_left", &"move_right")
+	), 0, (
+		Input.get_axis(&"move_forward", &"move_backward")
+	)).normalized()
 		
 #func _fluid_enter(f : QmapbspQuakeFluidVolume) :
 #	fluid = f
@@ -305,8 +315,6 @@ func _input(event:InputEvent) -> void:
 
 func toggle_noclip() -> void:
 	noclip = !noclip
-
-
 
 func _unhandled_input(event: InputEvent) -> void:		
 	if event.is_action_pressed("m1"):

@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://pa0xyphlny8o"]
+
+[ext_resource type="Script" uid="uid://dvidjtlchioyx" path="res://entities/info_structure.gd" id="1_nq2nn"]
+
+[node name="info_structure" type="Node3D" unique_id=1483104663]
+script = ExtResource("1_nq2nn")

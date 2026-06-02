@@ -18,12 +18,21 @@ config/name="Godot Quake Raiders"
 run/main_scene="uid://dgcbevg7wm4wv"
 config/features=PackedStringArray("4.6", "Forward Plus")
 
+[audio]
+
+buses/default_bus_layout="uid://domh0fmlx7aim"
+
 [debug]
 
 gdscript/warnings/untyped_declaration=1
 
+[debug_draw_3d]
+
+settings/addon_root_folder="res://addons/debug_draw_3d"
+
 [display]
 
+window/subwindows/embed_subwindows=false
 window/vsync/vsync_mode=0
 
 [editor]
@@ -34,7 +43,7 @@ version_control/autoload_on_startup=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/bsp_importer/plugin.cfg")
+enabled=PackedStringArray("res://addons/bsp_importer/plugin.cfg", "res://addons/raytraced_audio/plugin.cfg")
 
 [importer_defaults]
 
@@ -64,21 +73,19 @@ texture={
 "roughness/src_normal": ""
 }
 bsp={
-"culling_textures_exclude": Array[StringName]([&"water1", &"teleport", &"techtrs1_ylw1", &"techgrt1_blk1", &"metal_iron3g01", &"techgrt3_rst2", &"lavaskip", &"lava1", &"tele01", &"water2", &"water0"]),
+"culling_textures_exclude": Array[StringName]([&"64_water1_1", &"techgrt4_brwn2"]),
 "entity_offsets_quake_units": {
 &"example_offset_entity": Vector3(16, 16, 0)
 },
 "entity_path_pattern": "res://entities/{classname}.tscn",
-"entity_remap": {
-&"trigger_example": "res://triggers/trigger_example.tscn"
-},
+"entity_remap": {},
 "fullbright_range": PackedInt32Array(224, 255),
 "generate_occlusion_culling": true,
 "generate_texture_materials": true,
 "ignore_missing_entities": false,
 "ignored_flags": PackedInt64Array(),
 "import_lights": true,
-"include_sky_surfaces": false,
+"include_sky_surfaces": true,
 "inverse_scale_factor": 32.0,
 "lava_scene_template": "res://addons/bsp_importer/examples/lava_example_template.tscn",
 "light_brightness_scale": 16.0,
@@ -92,15 +99,15 @@ bsp={
 "slime_scene_template": "res://addons/bsp_importer/examples/slime_example_template.tscn",
 "texture_emission_path_pattern": "res://textures/{texture_name}_emission.png",
 "texture_material_rename": {
-&"texture_name1_example": "res://material/texture_name1_material.tres"
+&"techpnl_grey2_material": "res://materials/techpnl_grn2_material.tres"
 },
 "texture_palette_path": "res://textures/palette.lmp",
 "texture_path_pattern": "res://textures/{texture_name}.png",
 "texture_path_remap": {
-&"texture_name1_example": "res://textures/texture_name1.png"
+"texture_name1_example": "res://textures/texture_name1.png"
 },
 "transparent_texture_prefix": "{",
-"use_triangle_collision": true,
+"use_triangle_collision": false,
 "water_scene_template": "res://addons/bsp_importer/examples/water_example_template.tscn"
 }
 
@@ -267,7 +274,7 @@ q1_jump={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":32,"location":0,"echo":false,"script":null)
 ]
 }
-q1_toggle_noclip={
+toggle_noclip={
 "deadzone": 0.2,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":86,"key_label":0,"unicode":118,"location":0,"echo":false,"script":null)
 ]
@@ -282,10 +289,51 @@ use={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":69,"key_label":0,"unicode":101,"location":0,"echo":false,"script":null)
 ]
 }
+toggle_map={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":77,"key_label":0,"unicode":109,"location":0,"echo":false,"script":null)
+]
+}
+scroll_down={
+"deadzone": 0.2,
+"events": []
+}
+scroll_up={
+"deadzone": 0.2,
+"events": []
+}
+mousewheel_down={
+"deadzone": 0.2,
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":16,"position":Vector2(159, 8),"global_position":Vector2(168, 56),"factor":1.0,"button_index":5,"canceled":false,"pressed":true,"double_click":false,"script":null)
+]
+}
+mousewheel_up={
+"deadzone": 0.2,
+"events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":8,"position":Vector2(400, 7),"global_position":Vector2(409, 55),"factor":1.0,"button_index":4,"canceled":false,"pressed":true,"double_click":false,"script":null)
+]
+}
+jump={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":32,"location":0,"echo":false,"script":null)
+]
+}
+
+[layer_names]
+
+3d_render/layer_1="world"
+3d_render/layer_2="map"
+3d_physics/layer_1="World"
+3d_physics/layer_2="Entities"
+3d_physics/layer_3="Touchables"
 
 [physics]
 
 3d/physics_engine="Jolt Physics"
+
+[raytraced_audio]
+
+reverb_bus=&"RaytracedReverb"
+ambient_bus=&"RaytracedAmbient"
 
 [rendering]
 

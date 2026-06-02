@@ -4,44 +4,30 @@
 [ext_resource type="PackedScene" uid="uid://bk4pxwuyclju3" path="res://entities/playerQmap/player.tscn" id="2_lnu2h"]
 [ext_resource type="PackedScene" uid="uid://cycker4n8er6h" path="res://maps/test.tscn" id="3_lbhrr"]
 [ext_resource type="PackedScene" uid="uid://bsn8o457q00p0" path="res://scenes/main_menu.tscn" id="4_lbhrr"]
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_lbhrr"]
-sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-
-[sub_resource type="Sky" id="Sky_iywne"]
-sky_material = SubResource("ProceduralSkyMaterial_lbhrr")
-
-[sub_resource type="Environment" id="Environment_p57ef"]
-background_mode = 2
-sky = SubResource("Sky_iywne")
-ambient_light_source = 1
-tonemap_mode = 4
-ssr_enabled = true
-ssao_enabled = true
-ssil_enabled = true
-sdfgi_enabled = true
-sdfgi_use_occlusion = true
-glow_enabled = true
-volumetric_fog_enabled = true
-volumetric_fog_density = 0.0005
-volumetric_fog_length = 1024.0
+[ext_resource type="PackedScene" uid="uid://bpm4kttcro4x" path="res://scenes/ship_editor.tscn" id="5_iywne"]
 
 [node name="Game" type="Node3D" unique_id=1969659674 node_paths=PackedStringArray("player_container")]
 script = ExtResource("1_yqjtg")
 player_scene = ExtResource("2_lnu2h")
 player_container = NodePath("players")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1087040690]
-environment = SubResource("Environment_p57ef")
-
-[node name="world" type="Node3D" parent="." unique_id=1574480268]
+[node name="world" parent="." unique_id=167882052 instance=ExtResource("3_lbhrr")]
 unique_name_in_owner = true
-
-[node name="test" parent="world" unique_id=167882052 instance=ExtResource("3_lbhrr")]
+visible = false
 
 [node name="players" type="Node3D" parent="." unique_id=772094659]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.2147, -13.574395, -8.034176)
+
+[node name="map_viewer" type="Control" parent="." unique_id=621063171]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ship_editor" parent="map_viewer" unique_id=1063915117 instance=ExtResource("5_iywne")]
 
 [node name="main_menu" parent="." unique_id=1561999052 instance=ExtResource("4_lbhrr")]
 

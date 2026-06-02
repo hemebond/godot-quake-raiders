@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://c5grjq2rera3m"]
+
+[ext_resource type="Script" uid="uid://c0liuju23al03" path="res://entities/trigger_relay.gd" id="1_fwxqi"]
+
+[node name="trigger_relay" type="Node3D" unique_id=401659858]
+script = ExtResource("1_fwxqi")

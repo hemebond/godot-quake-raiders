@@ -21,18 +21,41 @@ func _ready() -> void:
 	main_menu.send_test_msg.connect(_send_test_msg)
 	main_menu.start_game.connect(start_game)
 	main_menu.join_game.connect(join_game)
+	%world.hide()
 
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("quit"):
 		get_tree().quit()
+	
+	if event.is_action_pressed("toggle_map"):
+		# FIXME: This does not work in multiplayer
+		print("peer: ", peer.get_unique_id())
+		print("multiplayer: ", multiplayer.get_unique_id())
+		var player = $players.get_node(str(peer.get_unique_id()))
+		print(player)
+		if $map_viewer.visible:
+			#%world.show()
+			$map_viewer.hide()
+			$map_viewer/ship_editor/camera_gimbal.set_process_input(false)
+			player.camera.make_current()
+			player.set_process_input(true)
+		else:
+			$map_viewer.show()
+			$map_viewer/ship_editor/camera_gimbal.set_process_input(true)
+			$map_viewer/ship_editor/camera_gimbal/inner_gimbal/camera.make_current()
+			#%world.hide()
+			# FIXME: this does not work in multiplayer
+			player.set_process_input(false)
+			
 
 
 
 func start_game(port:int = DEFAULT_PORT) -> Error:
 	print("Starting host!")
 	
+	%world.show()
 	main_menu.hide()
 
 	#var peer:ENetMultiplayerPeer = ENetMultiplayerPeer.new()
@@ -62,7 +85,7 @@ func _on_peer_connected(id:int) -> void:
 	print("Player %s joined the game" % id)
 	
 	# Setup player
-	var player:CharacterBody3D = player_scene.instantiate()
+	var player:QmapbspQuakePlayer = player_scene.instantiate()
 	player.name = str(id)
 	
 	# Move the new player to the spawn point
@@ -88,6 +111,7 @@ func _on_peer_disconnected(id:int) -> void:
 func join_game() -> void:
 	print("Joining game")
 	
+	%world.show()
 	main_menu.hide()
 	
 	var _error:Error = peer.create_client("localhost", DEFAULT_PORT)

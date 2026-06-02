@@ -17,14 +17,25 @@ properties/2/path = NodePath("around/head:rotation:x")
 properties/2/spawn = true
 properties/2/replication_mode = 1
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8r0pw"]
+shading_mode = 0
+disable_receive_shadows = true
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_12yrq"]
+material = SubResource("StandardMaterial3D_8r0pw")
+height = 1.75
+
 [node name="qmapPlayer" type="CharacterBody3D" unique_id=1912735464]
+collision_layer = 2
+collision_mask = 3
+floor_max_angle = 0.6981317
 script = ExtResource("1_30jy1")
 metadata/_custom_type_script = "uid://2e57pcv1n0gn"
 
 [node name="col" type="CollisionShape3D" parent="." unique_id=1571340241]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
 shape = SubResource("CylinderShape3D_30jy1")
-debug_color = Color(1, 0, 0.007843138, 0.41960785)
+debug_color = Color(0.09847677, 0.6141958, 1, 0.41960785)
 
 [node name="around" type="Node3D" parent="." unique_id=960844966]
 
@@ -32,6 +43,7 @@ debug_color = Color(1, 0, 0.007843138, 0.41960785)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
 [node name="cam" type="Camera3D" parent="around/head" unique_id=191654223]
+cull_mask = 1
 
 [node name="v_nail22" parent="around/head/cam" unique_id=31653795 instance=ExtResource("3_12yrq")]
 transform = Transform3D(-7.86805e-10, 0, 0.018000001, 0, 0.018000001, 0, -0.018000001, 0, -7.86805e-10, 0, -0.533, -0.557)
@@ -41,3 +53,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.039768577, 0)
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=217134409]
 replication_config = SubResource("SceneReplicationConfig_12yrq")
+
+[node name="map_body" type="MeshInstance3D" parent="." unique_id=1591619724]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+layers = 2
+cast_shadow = 0
+ignore_occlusion_culling = true
+mesh = SubResource("CylinderMesh_12yrq")

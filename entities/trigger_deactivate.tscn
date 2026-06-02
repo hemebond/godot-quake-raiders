@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dsgtgn1i8gwe5"]
+
+[ext_resource type="Script" uid="uid://co1ie1gw7bjch" path="res://entities/trigger_deactivate.gd" id="1_clv5p"]
+
+[node name="trigger_deactivate" type="Node3D" unique_id=249784449]
+script = ExtResource("1_clv5p")
