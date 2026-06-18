@@ -41,7 +41,7 @@ func post_import(_root_node: Node) -> void:
 	area.body_entered.connect(Callable(self, "_on_body_entered"), CONNECT_PERSIST)
 	area.monitorable = true
 
-	aabb = $Mesh.get_aabb()
+	#aabb = $Mesh.get_aabb()
 	
 	# creating func_button area collision shape
 	#var collision_shape := CollisionShape3D.new()
@@ -59,7 +59,7 @@ func post_import(_root_node: Node) -> void:
 		if child.is_class("CollisionShape3D"):
 			var dupe : CollisionShape3D = child.duplicate()
 			dupe.shape = dupe.shape.duplicate()  # have to duplicate the shape to make it unique before we resize it
-			dupe.shape.size += Vector3(0.1, 0.1, 0.1)
+			dupe.shape.size += Vector3(2.0/32.0, 2.0/32.0, 2.0/32.0)
 			area.add_child(dupe)
 			dupe.owner = _root_node
 	

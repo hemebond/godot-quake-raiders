@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://csp5ds14hovos" path="res://entities/func_door.gd" id="1_0do8k"]
 
-[node name="func_door" type="StaticBody3D" unique_id=487137545]
+[node name="func_door" type="AnimatableBody3D" unique_id=988866914]
 collision_layer = 2
 collision_mask = 2
 script = ExtResource("1_0do8k")

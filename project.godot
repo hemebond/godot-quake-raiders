@@ -16,11 +16,15 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 
 config/name="Godot Quake Raiders"
 run/main_scene="uid://dgcbevg7wm4wv"
-config/features=PackedStringArray("4.6", "Forward Plus")
+config/features=PackedStringArray("4.7", "Forward Plus")
 
 [audio]
 
 buses/default_bus_layout="uid://domh0fmlx7aim"
+
+[autoload]
+
+Console="*uid://ouiu5xh1cs8n"
 
 [debug]
 
@@ -43,7 +47,7 @@ version_control/autoload_on_startup=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/bsp_importer/plugin.cfg", "res://addons/raytraced_audio/plugin.cfg")
+enabled=PackedStringArray("res://addons/bsp_importer/plugin.cfg", "res://addons/console/plugin.cfg", "res://addons/mapper/plugin.cfg")
 
 [importer_defaults]
 
@@ -73,7 +77,7 @@ texture={
 "roughness/src_normal": ""
 }
 bsp={
-"culling_textures_exclude": Array[StringName]([&"64_water1_1", &"techgrt4_brwn2"]),
+"culling_textures_exclude": Array[StringName]([&"64_water1_1", &"techgrt4_brwn2", &"slime2_1", &"techcomp5blk1", &"techgrt1_blk1", &"techgrt2_ylw2"]),
 "entity_offsets_quake_units": {
 &"example_offset_entity": Vector3(16, 16, 0)
 },
@@ -322,6 +326,7 @@ jump={
 
 3d_render/layer_1="world"
 3d_render/layer_2="map"
+3d_render/layer_3="noshadows"
 3d_physics/layer_1="World"
 3d_physics/layer_2="Entities"
 3d_physics/layer_3="Touchables"
@@ -329,11 +334,6 @@ jump={
 [physics]
 
 3d/physics_engine="Jolt Physics"
-
-[raytraced_audio]
-
-reverb_bus=&"RaytracedReverb"
-ambient_bus=&"RaytracedAmbient"
 
 [rendering]
 
