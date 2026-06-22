@@ -12,6 +12,7 @@ var animations := {}
 
 @export var animation_frame:int = 0
 var previous_animation_frame:int = 0
+var next_animation_frame:int = 0
 
 @export var animation_player:AnimationPlayer
 
@@ -27,7 +28,7 @@ func _ready() -> void:
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:	
+func _process(delta: float) -> void:
 	if (animation_frame != previous_animation_frame):
 		mesh.set_blend_shape_value(previous_animation_frame, 0.0)
 		previous_animation_frame = animation_frame
