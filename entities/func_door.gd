@@ -22,7 +22,7 @@ const SF_DONT_LINK = 2
 @export var angle:float = 0.0
 @export var wait:float = 0.0
 @export var lip:float = 8.0 / 32.0
-@export var speed:float = 100 / 32.0
+@export var speed:float = 100.0 / 32.0
 @export var sounds:int = 0
 
 
@@ -49,7 +49,7 @@ var open:bool = false
 
 var has_crushed := false
 
-@export_node_path("AnimationPlayer") var _animation_player: NodePath
+@export_node_path("AnimationPlayer") var _animation_player:NodePath = ""
 @onready var animation_player: AnimationPlayer = get_node(_animation_player)
 
 func _enter_tree() -> void:
@@ -64,9 +64,6 @@ func _ready() -> void:
 	if targetname:
 		print("Adding ", self, "to group", "T_" + targetname)
 		add_to_group('T_' + targetname, true)
-
-	for c in get_children(true):
-		print("%s has child %s" % [name, c])
 
 
 
@@ -119,7 +116,7 @@ func set_import_value(key : String, value : String) -> bool:
 			lip = float(value) / 32
 			return true
 		"speed":
-			speed = float(value) / 32
+			speed = float(value) / 32.0
 			return true
 
 	return false
@@ -171,19 +168,33 @@ func _on_animation_finished(animation_name: StringName) -> void:
 
 
 func _gen_aabb() -> void:
-	print(aabb)
-	for m in get_children() :
-		if m is CollisionShape3D :
-			print(m)
-			#aabb = aabb.merge(m.get_aabb())
-			var shape := m.shape as ConvexPolygonShape3D
+	var mins:Vector3 = Vector3.INF
+	var maxs:Vector3 = -Vector3.INF
+	for child in get_children():
+		if (child is CollisionShape3D):
+			var shape = child.shape
+			if (shape is ConvexPolygonShape3D):
+				for point in shape.points:
+					point = child.transform * point
+					mins = mins.min(point)
+					maxs = maxs.max(point)
+			elif (shape is BoxShape3D):
+				# Since these can be transformed, the negative shape might not actually be the min.
+				var a:Vector3 = child.transform * (-shape.size * 0.5)
+				var b:Vector3 = child.transform * (shape.size * 0.5)
+				mins = mins.min(a)
+				mins = mins.min(b)
+				maxs = maxs.max(a)
+				maxs = maxs.max(b)
+			else:
+				printerr("Unhandled shape in ", self, ": ", shape)
 
-			if not shape:
-				continue
+	aabb = AABB(mins, maxs - mins)
 
-			for points in shape.get_points():
-				aabb = aabb.expand(points)
-	print(aabb)
+
+
+
+
 
 
 
@@ -197,24 +208,33 @@ func _on_wait_timer_timeout() -> void:
 
 
 func post_import(root_node: Node) -> void:
-	print("%s.post_import()" % [name])
-	print("root_node is %s" % root_node)
+	#
+	# root_node is the level/world node
+	#
 
 	add_to_group(&"doors", true)
+
+	_gen_aabb()
 
 	if true or not targetname:
 		create_trigger(root_node)
 
-	_gen_aabb()
-
 	# creating func_door sound players
 	var move_sound_player := AudioStreamPlayer3D.new()
+	move_sound_player.position = aabb.get_center()
 	add_child(move_sound_player, true)
 	move_sound_player.owner = root_node
+	move_sound_player.attenuation_model = AudioStreamPlayer3D.ATTENUATION_INVERSE_SQUARE_DISTANCE
+	move_sound_player.max_distance = 20.0
+	move_sound_player.volume_db = -20.0
 
 	var stop_sound_player := AudioStreamPlayer3D.new()
+	stop_sound_player.position = aabb.get_center()
 	add_child(stop_sound_player, true)
 	stop_sound_player.owner = root_node
+	stop_sound_player.attenuation_model = AudioStreamPlayer3D.ATTENUATION_INVERSE_SQUARE_DISTANCE
+	stop_sound_player.max_distance = 20.0
+	stop_sound_player.volume_db = -20.0
 
 	# loading func_door default sounds
 	match sounds:
@@ -259,8 +279,6 @@ func post_import(root_node: Node) -> void:
 
 
 func _create_animations() -> Array[Animation]:
-	var inverse_transform:Transform3D = transform.affine_inverse()
-
 	# creating empty animations
 	var open_animation := Animation.new()
 	var opened_animation := Animation.new()
@@ -280,8 +298,8 @@ func _create_animations() -> Array[Animation]:
 
 	# creating animation track names
 	var door_track := "."
-	var move_sound_playing_track := move_sound_player.name + ":playing"
-	var stop_sound_playing_track := stop_sound_player.name + ":playing"
+	var move_sound_playing_track:String = move_sound_player.name + ":playing"
+	var stop_sound_playing_track:String = stop_sound_player.name + ":playing"
 
 	open_animation.add_track(Animation.TYPE_POSITION_3D)
 	open_animation.track_set_path(0, door_track)
@@ -307,36 +325,23 @@ func _create_animations() -> Array[Animation]:
 	closed_animation.add_track(Animation.TYPE_VALUE)
 	closed_animation.track_set_path(1, move_sound_playing_track)
 
-	# preparing to create animation key frames
-	# var forward_axis := Vector3.ZERO
-	# var local_forward_vector:Vector3 = -basis.z.normalized()
-	# var forward_vector := local_forward_vector.normalized()
-	# var forward_axis_index := forward_vector.abs().max_axis_index()
-	# forward_axis[forward_axis_index] = signf(forward_vector[forward_axis_index])
-	# var offset := clampf(aabb.size[forward_axis_index] - lip, 0.0, INF)
-	# offset /= forward_vector.project(forward_axis).length()
-
-	var rot := (angle / 180.0) * PI
-	var dir := -(Vector3(
-		aabb.size.x, 0.0, aabb.size.z
-	)) + Vector3(lip, 0.0, lip)
-	var offset := Vector3.BACK.rotated(Vector3.UP, rot) * dir
-
-	print("%s aabb.size: %s" % [name, aabb.size])
-	print("%s rot: %s" % [name, rot])
-	print("%s dir: %s" % [name, dir])
-	print("%s offset: %s" % [name, offset])
+	var length:float = aabb.size.z
+	var offset:Vector3 = -transform.basis.z * (length - lip) # Forward vector of basis
 
 	# calculating func_door positions
 	var door_close_position:Vector3 = position
 	var door_open_position:Vector3 = position + offset
 
 	# creating animation frame times
-	var frames := [0.0, offset.length() / speed, offset.length() / speed + wait, 2.0 * offset.length() / speed + wait]
-	print("frames: ", frames)
-	print("offset: ", offset)
-	print("lip: ", lip)
-	print("speed: ", speed)
+	var frames := [
+		0.0,
+		offset.length() / speed,
+		offset.length() / speed + wait,
+		2.0 * offset.length() / speed + wait
+	]
+	print("[%s]offset.length: %s" % [name, offset.length()])
+	print("[%s]speed: %s" % [name, speed])
+	print("[%s]frames: %s" % [name, frames])
 
 	if spawnflags & 1: # starts open
 		var tmp := door_open_position
