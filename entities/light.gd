@@ -12,17 +12,6 @@ const light_brightness_scale := 16.0
 
 
 
-func _ready() -> void:
-	if (Engine.is_editor_hint()):
-		return  # don't do this stuff in editor (tool mode)
-
-
-
-#func _process(_delta: float) -> void:
-	#pass
-
-
-
 func set_import_value(key : String, value : String) -> bool:
 	print("set_import_value")
 	match key:
@@ -35,7 +24,7 @@ func set_import_value(key : String, value : String) -> bool:
 			light_energy = value.to_float() * light_brightness_scale / 255.0
 			omni_range = value.to_float() * unit_scale
 			return true
-			
+
 	return false
 
 

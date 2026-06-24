@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bxckcxnxwdny3"]
+
+[ext_resource type="Script" uid="uid://g5uv1wpd2wax" path="res://entities/func_train.gd" id="1_aggg4"]
+
+[node name="func_train" type="StaticBody3D" unique_id=1956200179]
+script = ExtResource("1_aggg4")

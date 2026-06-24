@@ -5,8 +5,6 @@
 [ext_resource type="PackedScene" uid="uid://byeu3vm4secki" path="res://maps/test.bsp" id="3_iywne"]
 [ext_resource type="PackedScene" uid="uid://bsn8o457q00p0" path="res://scenes/main_menu.tscn" id="4_lbhrr"]
 [ext_resource type="PackedScene" uid="uid://bpm4kttcro4x" path="res://scenes/ship_editor.tscn" id="5_iywne"]
-[ext_resource type="PackedScene" uid="uid://b1r234o7j55br" path="res://models/mapobjects/flame.tscn" id="6_p57ef"]
-[ext_resource type="PackedScene" uid="uid://b8noeo034ks0" path="res://models/mon_fumigator.tscn" id="7_u5sy4"]
 
 [node name="Game" type="Node3D" unique_id=1969659674 node_paths=PackedStringArray("player_container")]
 script = ExtResource("1_yqjtg")
@@ -35,12 +33,3 @@ grow_vertical = 2
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=941069763]
 _spawnable_scenes = PackedStringArray("uid://bk4pxwuyclju3")
 spawn_path = NodePath("../players")
-
-[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=1351455142]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.156536, -14.445483, 13.014955)
-
-[node name="Flame" parent="." unique_id=535886447 instance=ExtResource("6_p57ef")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.43334866, -14.56381, -11.279114)
-
-[node name="MonFumigator" parent="." unique_id=989890124 instance=ExtResource("7_u5sy4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.2678347, -14.929937, -4.0085144)

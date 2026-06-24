@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://bk4pxwuyclju3"]
 
 [ext_resource type="Script" uid="uid://2e57pcv1n0gn" path="res://entities/playerQmap/player.gd" id="1_30jy1"]
-[ext_resource type="PackedScene" uid="uid://dgljl8ii3mow2" path="res://models/v_nail2.glb" id="3_12yrq"]
+[ext_resource type="PackedScene" uid="uid://dc5rr062ndvyk" path="res://entities/weapons/pistol.tscn" id="2_12yrq"]
+[ext_resource type="Script" uid="uid://pvg7dt886kin" path="res://entities/weapons/scripts/weapon_controller.gd" id="3_pu63w"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_30jy1"]
 height = 1.75
@@ -43,10 +44,11 @@ debug_color = Color(0.09847677, 0.6141958, 1, 0.41960785)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
 [node name="cam" type="Camera3D" parent="around/head" unique_id=191654223]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.09689635, -0.13422394, 0.15169132)
 cull_mask = 1
 
-[node name="v_nail22" parent="around/head/cam" unique_id=31653795 instance=ExtResource("3_12yrq")]
-transform = Transform3D(-7.86805e-10, 0, 0.018000001, 0, 0.018000001, 0, -0.018000001, 0, -7.86805e-10, 0, -0.533, -0.557)
+[node name="Pistol" parent="around/head/cam" unique_id=699401759 instance=ExtResource("2_12yrq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.262, -0.29, -0.602)
 
 [node name="origin" type="Marker3D" parent="." unique_id=1945693142]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.039768577, 0)
@@ -56,7 +58,15 @@ replication_config = SubResource("SceneReplicationConfig_12yrq")
 
 [node name="map_body" type="MeshInstance3D" parent="." unique_id=1591619724]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+visible = false
 layers = 2
 cast_shadow = 0
 ignore_occlusion_culling = true
 mesh = SubResource("CylinderMesh_12yrq")
+
+[node name="components" type="Node" parent="." unique_id=255951450]
+
+[node name="WeaponController" type="Node" parent="components" unique_id=896996419 node_paths=PackedStringArray("weapon_model_parent")]
+script = ExtResource("3_pu63w")
+weapon_model_parent = NodePath("../../around/head/cam")
+metadata/_custom_type_script = "uid://pvg7dt886kin"

@@ -12,6 +12,10 @@ dest_files=["res://.godot/imported/test.map-a3aab0a5555d5f33b5387aff95fe200a.scn
 
 [params]
 
-game=1
+game=0
 wads=[]
-options={}
+options={
+"materials": "res://materials",
+"reference_override_materials": true,
+"textures": "res://textures"
+}

@@ -28,7 +28,7 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("quit"):
 		get_tree().quit()
-	
+
 	if event.is_action_pressed("toggle_map"):
 		# FIXME: This does not work in multiplayer
 		print("peer: ", peer.get_unique_id())
@@ -48,13 +48,13 @@ func _unhandled_input(event: InputEvent) -> void:
 			#%world.hide()
 			# FIXME: this does not work in multiplayer
 			player.set_process_input(false)
-			
+
 
 
 
 func start_game(port:int = DEFAULT_PORT) -> Error:
 	print("Starting host!")
-	
+
 	%world.show()
 	main_menu.hide()
 
@@ -66,14 +66,14 @@ func start_game(port:int = DEFAULT_PORT) -> Error:
 		return error
 
 	multiplayer.multiplayer_peer = peer
-	
+
 	# Only connect signals now that we have a server, otherwise will cause problems
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	#multiplayer.connected_to_server.connect(_on_connected_to_server)
 	#multiplayer.connection_failed.connect(_on_connection_failed)
 	#multiplayer.server_disconnected.connect(_on_server_disconnected)
-	
+
 	# Add the host to the game
 	_on_peer_connected(1)
 
@@ -83,16 +83,16 @@ func start_game(port:int = DEFAULT_PORT) -> Error:
 
 func _on_peer_connected(id:int) -> void:
 	print("Player %s joined the game" % id)
-	
+
 	# Setup player
 	var player:QmapbspQuakePlayer = player_scene.instantiate()
 	player.name = str(id)
-	
+
 	# Move the new player to the spawn point
 	# Assign the position to transform.origin because objects not yet in the tree have no global_position
 	#var info_player_start : Node3D = get_tree().get_current_scene().get_node("world/test/info_player_start")
 	#player_to_add.transform.origin = info_player_start.global_position
-	
+
 	# Spawn player
 	player_container.call_deferred("add_child", player)
 
@@ -103,19 +103,19 @@ func _on_peer_disconnected(id:int) -> void:
 
 	if not player_container.has_node(str(id)):
 		return
-	
+
 	player_container.get_node(str(id)).queue_free()
 
 
 
 func join_game() -> void:
 	print("Joining game")
-	
+
 	%world.show()
 	main_menu.hide()
-	
+
 	var _error:Error = peer.create_client("localhost", DEFAULT_PORT)
-	
+
 	multiplayer.multiplayer_peer = peer
 
 

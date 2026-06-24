@@ -52,17 +52,11 @@ var has_crushed := false
 @export_node_path("AnimationPlayer") var _animation_player:NodePath = ""
 @onready var animation_player: AnimationPlayer = get_node(_animation_player)
 
-func _enter_tree() -> void:
-	print("%s _enter_tree" % name)
-	for c in get_children(true):
-		print(c)
-
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	if targetname:
-		print("Adding ", self, "to group", "T_" + targetname)
 		add_to_group('T_' + targetname, true)
 
 
@@ -88,19 +82,18 @@ func create_trigger(_root_node: Node) -> void:
 
 
 
-func use(args:Array) -> void:
-	var caller:Node3D = args[0]
-	print("This is func_door.use() called by ", caller)
-	_trigger(caller)
+func use(other:Node) -> void:
+	print("This is func_door.use() called by ", other)
+	_trigger(other)
 
 
 
 func set_import_value(key : String, value : String) -> bool:
 	print("set_import_value: ", key, " = ", value)
-	
+
 	match key:
 		"angle":
-			angle = int(value)
+			angle = float(value)
 			if int(value) == -1:
 				angles = Vector3.UP
 			elif int(value) == -2:
@@ -172,7 +165,7 @@ func _gen_aabb() -> void:
 	var maxs:Vector3 = -Vector3.INF
 	for child in get_children():
 		if (child is CollisionShape3D):
-			var shape = child.shape
+			var shape:Shape3D = child.shape
 			if (shape is ConvexPolygonShape3D):
 				for point in shape.points:
 					point = child.transform * point
@@ -289,8 +282,6 @@ func _create_animations() -> Array[Animation]:
 	close_animation.length = 0.0
 	closed_animation.length = 0.0
 
-	var entity_center := aabb.get_center()
-
 	# finding func_door sound players children
 	var sound_players:Array[Node] = find_children("*", "AudioStreamPlayer3D", false, false)
 	var move_sound_player: AudioStreamPlayer3D = sound_players[0]
@@ -353,6 +344,7 @@ func _create_animations() -> Array[Animation]:
 	open_animation.position_track_insert_key(0, frames[0], door_close_position)
 	open_animation.track_insert_key(1, frames[0], true)
 	open_animation.position_track_insert_key(0, frames[1], door_open_position)
+	open_animation.track_set_key_transition(0, 1, -5)
 	open_animation.track_insert_key(1, frames[1], false)
 	open_animation.track_insert_key(2, frames[1], true)
 
@@ -370,7 +362,7 @@ func _create_animations() -> Array[Animation]:
 	closed_animation.track_insert_key(1, frames[0], false)
 
 	# finishing animation tracks
-	open_animation.track_set_interpolation_type(0, Animation.INTERPOLATION_LINEAR)
+	open_animation.track_set_interpolation_type(0, Animation.INTERPOLATION_CUBIC)
 	open_animation.track_set_interpolation_loop_wrap(0, false)
 	open_animation.track_set_imported(0, true)
 	open_animation.value_track_set_update_mode(1, Animation.UPDATE_DISCRETE)
@@ -385,7 +377,7 @@ func _create_animations() -> Array[Animation]:
 	opened_animation.track_set_imported(0, true)
 	opened_animation.track_set_imported(1, true)
 
-	close_animation.track_set_interpolation_type(0, Animation.INTERPOLATION_LINEAR)
+	close_animation.track_set_interpolation_type(0, Animation.INTERPOLATION_CUBIC)
 	close_animation.track_set_interpolation_loop_wrap(0, false)
 	close_animation.track_set_imported(0, true)
 	close_animation.value_track_set_update_mode(1, Animation.UPDATE_DISCRETE)

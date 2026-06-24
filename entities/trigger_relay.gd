@@ -15,8 +15,10 @@ func _process(delta: float) -> void:
 	pass
 
 
-func use(args:Array) -> void:
-	var caller:Node = args[0]
-	print("trigger_relay ", self, " use method called by ", caller)
-	
-	get_tree().call_group("T_" + target, "use", [self])
+func use(other:Node) -> void:
+	print("trigger_relay ", self, " use method called by ", other)
+	get_tree().call_group("T_" + target, "use", other)
+
+
+func activate(other:Node):
+	get_tree().call_group("T_" + target, "activate", other)
